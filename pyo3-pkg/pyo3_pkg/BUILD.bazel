@@ -1,0 +1,26 @@
+load("@rules_python//python:defs.bzl", "py_library")
+load(":pythonlib.bzl", "symlink_pythonlib")
+
+symlink_pythonlib(
+    name = "pyo3-pkg-symlink",
+    src = "//pyo3-pkg",
+    pkg_name = "pyo3_pkg",
+)
+
+filegroup(
+    name = "pyo3-pkg",
+    srcs = [
+        "__init__.py",
+        ":pyo3-pkg-symlink",
+    ],
+    visibility = ["//visibility:private"],
+)
+
+py_library(
+    name = "pyo3_pkg",
+    data = [
+        ":pyo3-pkg",
+    ],
+    imports = ["."],
+    visibility = ["//visibility:public"],
+)

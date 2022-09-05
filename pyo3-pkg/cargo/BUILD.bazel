@@ -1,0 +1,31 @@
+"""
+@generated
+cargo-raze generated Bazel file.
+
+DO NOT EDIT! Replaced on runs of cargo-raze
+"""
+
+package(default_visibility = ["//visibility:public"])
+
+licenses([
+    "notice",  # See individual crates for specific licenses
+])
+
+# Aliased targets
+alias(
+    name = "bindgen",
+    actual = "@pyo3_pkg__bindgen__0_60_1//:bindgen",
+    tags = [
+        "cargo-raze",
+        "manual",
+    ],
+)
+
+alias(
+    name = "pyo3",
+    actual = "@pyo3_pkg__pyo3__0_17_1//:pyo3",
+    tags = [
+        "cargo-raze",
+        "manual",
+    ],
+)

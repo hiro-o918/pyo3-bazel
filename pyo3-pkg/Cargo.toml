@@ -11,3 +11,6 @@ pyo3 = {version = "0.17.1", features = ["extension-module"]}
 [lib]
 name = "pyo3_pkg"
 crate-type = ["cdylib"]
+
+[build-dependencies]
+bindgen = "0.60.1"
