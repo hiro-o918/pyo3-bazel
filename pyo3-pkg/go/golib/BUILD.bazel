@@ -1,0 +1,28 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+load("//pyo3-pkg/go:golib.bzl", "go_archive_header")
+
+go_library(
+    name = "golib_lib",
+    srcs = [
+        "main.go",
+        "test.go",
+    ],
+    cgo = True,
+    importpath = "github.com/hiro-o918/pyo3-bazel/pyo3-pkg/go/golib",
+    visibility = ["//visibility:public"],
+    deps = ["//golib"],
+)
+
+go_binary(
+    name = "golib.a",
+    basename = "golib",
+    embed = [":golib_lib"],
+    linkmode = "c-archive",
+    visibility = ["//visibility:public"],
+)
+
+go_archive_header(
+    name = "golib.h",
+    cc_lib = ":golib.a",
+    visibility = ["//visibility:public"],
+)

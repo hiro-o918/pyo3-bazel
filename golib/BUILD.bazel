@@ -1,0 +1,9 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "golib",
+    srcs = ["echo.go"],
+    importpath = "github.com/hiro-o918/pyo3-bazel/golib",
+    visibility = ["//visibility:public"],
+    deps = ["@com_github_rs_zerolog//log"],
+)

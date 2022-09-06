@@ -1,0 +1,8 @@
+py_binary(
+    name = "python-cmd",
+    srcs = glob(["**/*.py"]),
+    main = "main.py",
+    deps = [
+        "//pyo3-pkg/pyo3_pkg",
+    ],
+)

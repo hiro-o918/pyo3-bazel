@@ -4,15 +4,18 @@
 members = ["pyo3-pkg"]
 
 [workspace.metadata.raze]
-workspace_path = "//cargo"
-gen_workspace_prefix = "cargo"
-genmode = "Remote"
 default_gen_buildrs = true
 experimental_api = true
-render_package_aliases = false
+gen_workspace_prefix = "pyo3_pkg"
+genmode = "Remote"
 targets = [
   "x86_64-apple-darwin",
   "x86_64-unknown-linux-gnu",
   "aarch64-apple-darwin",
   "aarch64-unknown-linux-gnu",
 ]
+workspace_path = "//thirdparty/cargo"
+package_aliases_dir = "cargo"
+
+[workspace.metadata.raze.crates.clap.'*']
+compile_data_attr = "glob([\"**/*.md\"])"
