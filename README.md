@@ -13,8 +13,16 @@ bazel run //python-cmd
 Update BUILD.bazel by Cargo.toml
 Run this command every time you update Cargo.toml.
 
+#### [Update Dependencies](https://bazelbuild.github.io/rules_rust/crate_universe.html#repinning--updating-dependencies)
+
 ```console
-bazel run @cargo_raze//:raze -- --manifest-path=$(realpath Cargo.toml)
+CARGO_BAZEL_REPIN=1 bazel sync --only=crate_index
+```
+
+#### [Create Config for Rust Analyzer](https://bazelbuild.github.io/rules_rust/rust_analyzer.html)
+
+```console
+bazel run @rules_rust//tools/rust_analyzer:gen_rust_project
 ```
 
 ### Golang

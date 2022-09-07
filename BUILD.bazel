@@ -12,12 +12,3 @@ gazelle(
     ],
     command = "update-repos",
 )
-
-filegroup(
-    name = "gomod",
-    srcs = [
-        "go.mod",
-        "go.sum",
-    ],
-    visibility = ["//visibility:public"],
-)

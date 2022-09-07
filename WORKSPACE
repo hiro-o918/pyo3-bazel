@@ -13,17 +13,11 @@ http_archive(
 
 http_archive(
     name = "rules_rust",
-    sha256 = "872b04538ca20dad94791c348623f079ba93daf274c1d57ae6bfe0930ec77f0d",
+    sha256 = "0cc7e6b39e492710b819e00d48f2210ae626b717a3ab96e048c43ab57e61d204",
     urls = [
-        "https://github.com/bazelbuild/rules_rust/releases/download/0.6.0/rules_rust-v0.6.0.tar.gz",
+        "https://mirror.bazel.build/github.com/bazelbuild/rules_rust/releases/download/0.10.0/rules_rust-v0.10.0.tar.gz",
+        "https://github.com/bazelbuild/rules_rust/releases/download/0.10.0/rules_rust-v0.10.0.tar.gz",
     ],
-)
-
-http_archive(
-    name = "cargo_raze",
-    sha256 = "fa16f00e6b4ad0452c21ebf30d6d36cf2d1ada1cbad76e5dfb33c161cad3e785",
-    strip_prefix = "cargo-raze-0.16.0",
-    url = "https://github.com/google/cargo-raze/archive/v0.16.0.tar.gz",
 )
 
 http_archive(
@@ -55,12 +49,33 @@ load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
 
 bazel_skylib_workspace()
 
-load("@rules_rust//rust:repositories.bzl", "rust_repositories")
+load("@rules_rust//rust:repositories.bzl", "rules_rust_dependencies", "rust_register_toolchains")
 
-rust_repositories(
-    edition = "2021",
-    version = "1.60.0",
+rules_rust_dependencies()
+
+rust_register_toolchains(edition = "2021")
+
+load("@rules_rust//crate_universe:repositories.bzl", "crate_universe_dependencies")
+
+crate_universe_dependencies(bootstrap = True)
+
+load("@rules_rust//crate_universe:defs.bzl", "crates_repository")
+
+crates_repository(
+    name = "crate_index",
+    cargo_lockfile = "//:Cargo.Bazel.lock",
+    generator = "@cargo_bazel_bootstrap//:cargo-bazel",
+    lockfile = "//:cargo-bazel-lock.json",
+    manifests = [
+        "//:Cargo.toml",
+        "//pyo3-pkg:Cargo.toml",
+    ],
+    rust_version = "1.62.0",
 )
+
+load("@crate_index//:defs.bzl", cargo_crate_repositories = "crate_repositories")
+
+cargo_crate_repositories()
 
 load("@rules_rust//bindgen:repositories.bzl", "rust_bindgen_dependencies", "rust_bindgen_register_toolchains")
 
@@ -68,17 +83,9 @@ rust_bindgen_dependencies()
 
 rust_bindgen_register_toolchains()
 
-load("@//thirdparty/cargo:crates.bzl", "pyo3_pkg_fetch_remote_crates")
+load("@rules_rust//tools/rust_analyzer:deps.bzl", "rust_analyzer_dependencies")
 
-pyo3_pkg_fetch_remote_crates()
-
-load("@cargo_raze//:repositories.bzl", "cargo_raze_repositories")
-
-cargo_raze_repositories()
-
-load("@cargo_raze//:transitive_deps.bzl", "cargo_raze_transitive_deps")
-
-cargo_raze_transitive_deps()
+rust_analyzer_dependencies()
 
 load("@rules_python//python:repositories.bzl", "python_register_toolchains")
 
@@ -90,7 +97,6 @@ python_register_toolchains(
 )
 
 load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
-
 
 go_register_toolchains(version = "1.19")
 
