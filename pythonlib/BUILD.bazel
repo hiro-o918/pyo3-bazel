@@ -1,0 +1,14 @@
+load("@pip//:requirements.bzl", "requirement")
+
+py_test(
+    name = "pytest",
+    srcs = glob(["tests/**/*.py"]),
+    # Avoid package name conflict with the below issue, must specify `legacy_create_init` to `False`
+    # https://github.com/bazelbuild/bazel/issues/7386
+    legacy_create_init = False,
+    main = "tests/run_pytest.py",
+    deps = [
+        "//pythonlib/pythonlib",
+        requirement("pytest"),
+    ],
+)

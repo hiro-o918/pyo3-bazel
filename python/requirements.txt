@@ -1,0 +1,3 @@
+numpy~=1.23.2
+# development tools
+pytest~=7.1.3

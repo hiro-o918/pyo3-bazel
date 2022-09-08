@@ -96,6 +96,21 @@ python_register_toolchains(
     python_version = "3.10",
 )
 
+load("@python//:defs.bzl", python_interpreter = "interpreter")
+load("@rules_python//python:pip.bzl", "pip_parse")
+
+pip_parse(
+    name = "pip",
+    python_interpreter_target = python_interpreter,
+    enable_implicit_namespace_pkgs = True,
+    requirements_lock = "//python:requirements_lock.txt",
+)
+
+load("@pip//:requirements.bzl", "install_deps")
+
+# Initialize repositories for all packages in requirements_lock.txt.
+install_deps()
+
 load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
 
 go_register_toolchains(version = "1.19")

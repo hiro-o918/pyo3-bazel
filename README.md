@@ -34,3 +34,33 @@ bazel run @go_sdk//:bin/go -- mod tidy
 bazel run //:gazelle
 bazel run //:gazelle-update-repos
 ```
+
+### Python
+
+#### Update Dependencies
+
+Manually edit [`python/requirements.txt`](python/requirements.txt) then run the below.
+
+```console
+bazel run //python:requirements.update
+```
+
+## Projects
+
+#### golib
+
+Go Library
+
+TODO: Write more
+
+### pythonlib
+
+Python library
+
+#### Run Test
+
+Run pytest ob pythonlib
+
+```console
+bazel test //pythonlib:pytest
+```
