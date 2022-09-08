@@ -3,7 +3,6 @@ py_binary(
     srcs = glob(["**/*.py"]),
     main = "main.py",
     deps = [
-        "//pyo3-pkg/pyo3_pkg",
         "//pythonlib",
     ],
 )
