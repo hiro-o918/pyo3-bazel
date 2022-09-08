@@ -37,17 +37,11 @@ bazel run //:gazelle-update-repos
 
 ### Python
 
-#### Update Dependencies
-
-Manually edit [`python/requirements.txt`](python/requirements.txt) then run the below.
-
-```console
-bazel run //python:requirements.update
-```
+Check the [README.md](python/README.md) for more information.
 
 ## Projects
 
-#### golib
+### golib
 
 Go Library
 
