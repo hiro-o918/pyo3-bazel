@@ -1,5 +1,11 @@
 # pyo3-bazel
 
+## Requirements
+
+-   [poetry](https://python-poetry.org/docs/)
+-   [bazel](https://bazel.build/) or [bazelisk](https://github.com/bazelbuild/bazelisk)
+    -   bazelisk is recommended
+
 This is an example repository to build python bindings of rust (PyO3) using Bazel.
 
 ```console
