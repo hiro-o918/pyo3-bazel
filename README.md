@@ -58,3 +58,21 @@ Run pytest ob pythonlib
 ```console
 bazel test //pythonlib:pytest
 ```
+
+## Format and Lint
+
+### Format
+
+Format packages with the following command:
+
+```console
+bazel run //... --build_tag_filters format
+```
+
+### Lint
+
+Lint packages with the following command:
+
+```console
+bazel test //... --test_tag_filters lint
+```
