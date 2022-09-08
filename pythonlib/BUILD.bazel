@@ -1,4 +1,17 @@
 load("@pip//:requirements.bzl", "requirement")
+load("//python:linter.bzl", "black_lint", "black_format")
+
+py_library(
+    name = "pythonlib",
+    srcs = glob(["pythonlib/**/*.py"]),
+    imports = [
+        ".",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        requirement("numpy"),
+    ],
+)
 
 py_test(
     name = "pytest",
@@ -8,7 +21,21 @@ py_test(
     legacy_create_init = False,
     main = "tests/run_pytest.py",
     deps = [
-        "//pythonlib/pythonlib",
+        ":pythonlib",
         requirement("pytest"),
     ],
+)
+
+black_lint(
+    name = "black_lint",
+    srcs = glob(["**/*.py"]),
+    legacy_create_init = False,
+    tags = ["lint"]
+)
+
+black_format(
+    name = "black_format",
+    srcs = glob(["**/*.py"]),
+    legacy_create_init = False,
+    tags = ["format"]
 )

@@ -4,6 +4,6 @@ py_binary(
     main = "main.py",
     deps = [
         "//pyo3-pkg/pyo3_pkg",
-        "//pythonlib/pythonlib",
+        "//pythonlib",
     ],
 )
