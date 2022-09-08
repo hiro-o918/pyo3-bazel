@@ -96,14 +96,19 @@ python_register_toolchains(
     python_version = "3.10",
 )
 
+load("//python:poetry.bzl", "requirements_lock")
 load("@python//:defs.bzl", python_interpreter = "interpreter")
 load("@rules_python//python:pip.bzl", "pip_parse")
+
+requirements_lock(
+    name = "poetry",
+    lockfile = "//python:poetry.lock",
+)
 
 pip_parse(
     name = "pip",
     python_interpreter_target = python_interpreter,
-    enable_implicit_namespace_pkgs = True,
-    requirements_lock = "//python:requirements_lock.txt",
+    requirements_lock = "@poetry//:requirements_lock.txt",
 )
 
 load("@pip//:requirements.bzl", "install_deps")
