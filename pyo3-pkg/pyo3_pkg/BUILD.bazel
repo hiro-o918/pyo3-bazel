@@ -2,25 +2,34 @@ load("@rules_python//python:defs.bzl", "py_library")
 load(":pythonlib.bzl", "symlink_pythonlib")
 
 symlink_pythonlib(
-    name = "pyo3-pkg-symlink",
+    name = "pyo3_pkg_symlink",
     src = "//pyo3-pkg",
     pkg_name = "pyo3_pkg",
 )
 
 filegroup(
-    name = "pyo3-pkg",
+    name = "pyo3_pkg.a",
     srcs = [
-        "__init__.py",
-        ":pyo3-pkg-symlink",
+        ":pyo3_pkg_symlink",
     ],
-    visibility = ["//visibility:private"],
 )
 
 py_library(
     name = "pyo3_pkg",
+    srcs = glob(["**/*.py"]),
     data = [
-        ":pyo3-pkg",
+        ":pyo3_pkg.a",
     ],
     imports = ["."],
+    visibility = ["//visibility:public"],
+)
+
+# for wheel packaging to include archive files
+filegroup(
+    name = "pyo3_pkg_data",
+    srcs = [
+        ":pyo3_pkg",
+        ":pyo3_pkg.a",
+    ],
     visibility = ["//visibility:public"],
 )

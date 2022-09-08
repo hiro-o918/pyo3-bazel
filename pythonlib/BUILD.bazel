@@ -1,5 +1,9 @@
 load("@pip//:requirements.bzl", "requirement")
-load("//python:linter.bzl", "black_lint", "black_format")
+load("@rules_python//python:packaging.bzl", "py_wheel")
+load("@rules_python//python:versions.bzl", "gen_python_config_settings")
+load("//python:linter.bzl", "black_format", "black_lint")
+
+gen_python_config_settings()
 
 py_library(
     name = "pythonlib",
@@ -9,7 +13,33 @@ py_library(
     ],
     visibility = ["//visibility:public"],
     deps = [
+        "//pyo3-pkg/pyo3_pkg",
         requirement("numpy"),
+    ],
+)
+
+py_wheel(
+    name = "pythonlib_wheel",
+    distribution = "pythonlib wheel",
+    platform = select({
+        ":aarch64-apple-darwin": "macosx_11_0_arm64",
+        ":aarch64-unknown-linux-gnu": "manylinux2014_aarch64",
+        ":x86_64-apple-darwin": "macosx_11_0_x86_64",  # this is typically macosx_10_9_x86_64?
+        ":x86_64-unknown-linux-gnu": "manylinux2014_x86_64",
+    }),
+    python_requires = "~=3.10",
+    python_tag = "py3",
+    requires = [
+        "numpy>=1.23.2",
+    ],
+    strip_path_prefixes = [
+        "pythonlib/",
+        "pyo3-pkg/",
+    ],
+    version = "0.0.1",
+    deps = [
+        ":pythonlib",
+        "//pyo3-pkg/pyo3_pkg:pyo3_pkg_data",
     ],
 )
 
@@ -30,12 +60,12 @@ black_lint(
     name = "black_lint",
     srcs = glob(["**/*.py"]),
     legacy_create_init = False,
-    tags = ["lint"]
+    tags = ["lint"],
 )
 
 black_format(
     name = "black_format",
     srcs = glob(["**/*.py"]),
     legacy_create_init = False,
-    tags = ["format"]
+    tags = ["format"],
 )
