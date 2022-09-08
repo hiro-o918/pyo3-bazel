@@ -8,8 +8,18 @@
 
 This is an example repository to build python bindings of rust (PyO3) using Bazel.
 
+## Production Targets
+
+### Run script using FFI of Go and Rust
+
 ```console
 bazel run //python-cmd
+```
+
+### Build wheel a package including archives
+
+```console
+bazel build //pythonlib:pythonlib_wheel
 ```
 
 ## Development
