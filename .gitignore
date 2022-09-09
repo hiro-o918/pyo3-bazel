@@ -1,7 +1,9 @@
 # Created by https://www.toptal.com/developers/gitignore/api/python,rust
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,rust
 
+/Cargo.lock
 rust-project.json
+
 ### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__/
