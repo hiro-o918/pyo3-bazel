@@ -82,7 +82,7 @@ bazel test //pythonlib:pytest
 Format packages with the following command:
 
 ```console
-bazel run //... --build_tag_filters format
+bazel query "attr(tags, '\\bformat\\b', //...)" | xargs -I{} bazel run {}
 ```
 
 ### Lint
