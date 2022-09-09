@@ -1,6 +1,6 @@
 load("@crate_index//:defs.bzl", "crate_deps")
 load("@rules_rust//bindgen:bindgen.bzl", "rust_bindgen_library")
-load("@rules_rust//rust:defs.bzl", "rust_library", "rust_shared_library")
+load("@rules_rust//rust:defs.bzl", "rust_library", "rust_shared_library", "rust_test")
 load("@bazel_skylib//lib:selects.bzl", "selects")
 
 rust_bindgen_library(
@@ -12,6 +12,16 @@ rust_bindgen_library(
 
 rust_library(
     name = "pyo3-pkg_lib",
+    srcs = glob(["src/**/*.rs"]),
+    deps = crate_deps([
+        "pyo3",
+    ]) + [
+        ":golib_binding",
+    ],
+)
+
+rust_test(
+    name = "pyo3-pkg_test",
     srcs = glob(["src/**/*.rs"]),
     deps = crate_deps([
         "pyo3",
