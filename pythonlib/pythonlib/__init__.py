@@ -1,4 +1,4 @@
-from pyo3_pkg import rust_echo, golib
+from pyo3_pkg import golib, rust_echo
 
 __all__ = [
     "golib",
