@@ -2,9 +2,11 @@
 
 ## Requirements
 
--   [poetry](https://python-poetry.org/docs/)
 -   [bazel](https://bazel.build/) or [bazelisk](https://github.com/bazelbuild/bazelisk)
     -   bazelisk is recommended
+-   [poetry](https://python-poetry.org/docs/): development only
+-   [protoc](https://grpc.io/docs/protoc-installation/): development only
+    -   [prost_build] of Rust depends on protoc binary, so to use rust-analyzer on development, you need to install protoc
 
 This is an example repository to build python bindings of rust (PyO3) using Bazel.
 
@@ -35,11 +37,6 @@ Run this command every time you update Cargo.toml.
 CARGO_BAZEL_REPIN=1 bazel sync --only=crate_index
 ```
 
-#### [Create Config for Rust Analyzer](https://bazelbuild.github.io/rules_rust/rust_analyzer.html)
-
-```console
-bazel run @rules_rust//tools/rust_analyzer:gen_rust_project
-```
 
 ### Golang
 

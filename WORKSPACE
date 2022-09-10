@@ -83,10 +83,6 @@ rust_bindgen_dependencies()
 
 rust_bindgen_register_toolchains()
 
-load("@rules_rust//tools/rust_analyzer:deps.bzl", "rust_analyzer_dependencies")
-
-rust_analyzer_dependencies()
-
 load("@rules_python//python:repositories.bzl", "python_register_toolchains")
 
 python_register_toolchains(
