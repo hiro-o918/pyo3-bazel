@@ -1,0 +1,24 @@
+[package]
+edition = "2021"
+name = "rustlib"
+version = "0.1.0"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = {version = "1.0.58", features = ["backtrace"]}
+prost = "0.11.0"
+tokio = {version = "1.16.1", features = [
+  "rt",
+  "rt-multi-thread",
+  "macros",
+  "fs",
+]}
+tonic = "0.8.0"
+tonic-reflection = "0.5.0"
+
+[lib]
+name = "rustlib"
+
+[build-dependencies]
+tonic-build = "0.8.0"

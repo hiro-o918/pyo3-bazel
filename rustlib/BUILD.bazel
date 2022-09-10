@@ -1,0 +1,43 @@
+load("@rules_rust//cargo:cargo_build_script.bzl", "cargo_build_script")
+load("@rules_rust//rust:defs.bzl", "rust_library", "rust_test")
+load("@crate_index//:defs.bzl", "crate_deps")
+
+cargo_build_script(
+    name = "build_script",
+    srcs = ["build.rs"],
+    build_script_env = {
+        "ECHO_V1_PROTO": "$(execpath //proto/v1:echo_v1.proto)",
+        "PROTO_ROOT": "$(execpath //proto:.protoroot)",
+        # overwrite `PROTOC` by built `protoc` command to avoid error of missing `cmake`,
+        # because `prost_build` try to build `protoc` with `cmake` if `protoc` not found
+        "PROTOC": "$(execpath @com_google_protobuf//:protoc)",
+    },
+    data = [
+        "//proto:.protoroot",
+        "//proto/v1:echo_v1.proto",
+        "@com_google_protobuf//:protoc",
+    ],
+    deps = crate_deps([
+        "tonic-build",
+    ]),
+)
+
+rust_library(
+    name = "rustlib",
+    srcs = glob([
+        "src/**/*.rs",
+    ]),
+    deps = [":build_script"] + crate_deps([
+        "anyhow",
+        "prost",
+        "tonic",
+    ]),
+)
+
+rust_test(
+    name = "rustlib_test",
+    srcs = glob([
+        "src/**/*.rs",
+    ]),
+    deps = [":rustlib"],
+)
