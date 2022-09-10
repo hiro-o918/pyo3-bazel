@@ -1,0 +1,13 @@
+package echo.v1;
+
+message EchoRequest {
+  required string message = 1;
+}
+
+message EchoResponse {
+  required string message = 1;
+}
+
+service Echo {
+  rpc Echo (EchoRequest) returns (EchoResponse) {}
+}
