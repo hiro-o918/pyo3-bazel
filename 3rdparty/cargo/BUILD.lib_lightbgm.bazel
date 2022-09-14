@@ -2,10 +2,11 @@ load("@rules_rust//bindgen:bindgen.bzl", "rust_bindgen_library")
 load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
 load("@local_tools//:defs.bzl", "extract_cc_binary", "extract_cc_header")
 load("@bazel_skylib//lib:selects.bzl", "selects")
+load("@rules_cc//cc:defs.bzl", "cc_library")
 
 filegroup(
     name = "lib_lightgbm_src",
-    srcs = glob(["**"]),
+    srcs = glob(["lightgbm-sys/lightgbm/**"]),
 )
 
 cmake(
@@ -21,33 +22,41 @@ cmake(
     out_static_libs = ["lib_lightgbm.a"],
 )
 
-extract_cc_binary(
-    name = "lib_lightbgm.a",
-    binary_name = "lib_lightbgm.a",
-    cc_lib = ":lib_lightbgm_cmake",
+cc_library(
+    name = "lib_lightgbm_wrapper",
+    srcs = ["lightgbm-sys/wrapper.h"],
+    deps = [
+        ":lib_lightbgm_cmake",
+    ],
 )
 
-cc_import(
-    name = "lib_lightbgm_cmake_import",
-    hdrs = glob(["include/**/*.h"]),
-    static_library = ":lib_lightbgm.a",
-)
+# extract_cc_binary(
+#     name = "lib_lightbgm.a",
+#     binary_name = "lib_lightbgm.a",
+#     cc_lib = ":lib_lightbgm_cmake",
+# )
 
-extract_cc_header(
-    name = "c_api.h",
-    cc_lib = ":lib_lightbgm_cmake_import",
-    header_name = "include/LightGBM/c_api.h",
-)
+# cc_import(
+#     name = "lib_lightbgm_cmake_import",
+#     hdrs = glob(["include/**/*.h"]),
+#     static_library = ":lib_lightbgm.a",
+# )
+
+# extract_cc_header(
+#     name = "c_api.h",
+#     cc_lib = ":lib_lightbgm_cmake_import",
+#     header_name = "include/LightGBM/c_api.h",
+# )
 
 rust_bindgen_library(
     name = "lib_lightgbm_bindgen",
-    cc_lib = ":lib_lightbgm_cmake_import",
+    cc_lib = ":lib_lightgbm_wrapper",
     clang_flags = [
         "-x",
         "c++",
         "-std=c++11",
     ],
-    header = ":c_api.h",
+    header = "lightgbm-sys/wrapper.h",
     rustc_flags = selects.with_or({
         (
             "@rules_rust//rust/platform:x86_64-apple-darwin",
@@ -66,7 +75,7 @@ rust_bindgen_library(
             "lib",
         ],
     }),
-    toolchains = ["@rules_foreign_cc//toolchains:current_cmake_toolchain"],
+    # toolchains = ["@rules_foreign_cc//toolchains:current_cmake_toolchain"],
 )
 
 alias(
