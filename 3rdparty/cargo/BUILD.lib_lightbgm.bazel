@@ -1,6 +1,6 @@
 load("@rules_rust//bindgen:bindgen.bzl", "rust_bindgen_library")
 load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
-load("@local_tools//:defs.bzl", "extract_cc_binary", "extract_cc_header")
+load("@pyo3-bazel//tools:defs.bzl", "extract_cc_binary", "extract_cc_header")
 load("@bazel_skylib//lib:selects.bzl", "selects")
 
 filegroup(
@@ -46,7 +46,10 @@ rust_bindgen_library(
         "-x",
         "c++",
         "-std=c++11",
+        "-I/private/var/tmp/_bazel_hironori.yamamoto/7ec19e5bd6cca786eabac574d2c3a4cf/external/bindgen_clang_osx/include/c++/v1",
+        "-Iexternal/lib_lightgbm/include",
     ],
+    data = [":lib_lightgbm_src"],
     header = ":c_api.h",
     rustc_flags = selects.with_or({
         (
@@ -66,7 +69,6 @@ rust_bindgen_library(
             "lib",
         ],
     }),
-    toolchains = ["@rules_foreign_cc//toolchains:current_cmake_toolchain"],
 )
 
 alias(
