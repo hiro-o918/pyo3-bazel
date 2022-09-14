@@ -1,4 +1,6 @@
+load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
 load("@bazel_gazelle//:deps.bzl", "go_repository")
+load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
 def go_dependencies():
     go_repository(
@@ -50,4 +52,16 @@ def go_dependencies():
         importpath = "golang.org/x/sys",
         sum = "h1:v6hYoSR9T5oet+pMXwUWkbiVqx/63mlHjefrHmxwfeY=",
         version = "v0.0.0-20220829200755-d48e67d00261",
+    )
+
+def cargo_sys_dependencies():
+    maybe(
+        git_repository,
+        name = "lib_lightgbm",
+        commit = "3cf764e438347d1aa12a1f1c464a6295cf7a6134",
+        remote = "https://github.com/vaaaaanquish/LightGBM.git",
+        init_submodules = True,
+        build_file = Label("//3rdparty/cargo:BUILD.lib_lightbgm.bazel"),
+        # The version here should match the version used with the Rust crate `lightgbm-sys`
+        shallow_since = "1610252734 +0900",
     )

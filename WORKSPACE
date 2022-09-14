@@ -45,6 +45,18 @@ http_archive(
     ],
 )
 
+http_archive(
+    name = "rules_foreign_cc",
+    sha256 = "2a4d07cd64b0719b39a7c12218a3e507672b82a97b98c6a89d38565894cf7c51",
+    strip_prefix = "rules_foreign_cc-0.9.0",
+    url = "https://github.com/bazelbuild/rules_foreign_cc/archive/refs/tags/0.9.0.tar.gz",
+)
+
+local_repository(
+    name = "local_tools",
+    path = "./tools",
+)
+
 load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
 
 bazel_skylib_workspace()
@@ -62,10 +74,16 @@ load("@rules_rust//crate_universe:repositories.bzl", "crate_universe_dependencie
 
 crate_universe_dependencies(bootstrap = True)
 
-load("@rules_rust//crate_universe:defs.bzl", "crates_repository")
+load("@rules_rust//crate_universe:defs.bzl", "crate", "crates_repository")
 
 crates_repository(
     name = "crate_index",
+    annotations = {
+        "lightgbm-sys": [crate.annotation(
+            gen_build_script = False,
+            deps = ["@lib_lightgbm"],
+        )],
+    },
     cargo_lockfile = "//:Cargo.Bazel.lock",
     generator = "@cargo_bazel_bootstrap//:cargo-bazel",
     lockfile = "//:cargo-bazel-lock.json",
@@ -123,7 +141,7 @@ go_register_toolchains(version = "1.19")
 go_rules_dependencies()
 
 load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies")
-load("//:deps.bzl", "go_dependencies")
+load("//:deps.bzl", "cargo_sys_dependencies", "go_dependencies")
 
 # gazelle:repository_macro deps.bzl%go_dependencies
 go_dependencies()
@@ -143,3 +161,11 @@ http_archive(
 load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
 
 protobuf_deps()
+
+cargo_sys_dependencies()
+
+load("@rules_foreign_cc//foreign_cc:repositories.bzl", "rules_foreign_cc_dependencies")
+
+# This sets up some common toolchains for building targets. For more details, please see
+# https://bazelbuild.github.io/rules_foreign_cc/0.9.0/flatten.html#rules_foreign_cc_dependencies
+rules_foreign_cc_dependencies()

@@ -16,6 +16,7 @@ tokio = {version = "1.16.1", features = [
 ]}
 tonic = "0.8.0"
 tonic-reflection = "0.5.0"
+lightgbm = "0.2.3"
 
 [lib]
 name = "rustlib"

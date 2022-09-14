@@ -1,0 +1,76 @@
+load("@rules_rust//bindgen:bindgen.bzl", "rust_bindgen_library")
+load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
+load("@local_tools//:defs.bzl", "extract_cc_binary", "extract_cc_header")
+load("@bazel_skylib//lib:selects.bzl", "selects")
+
+filegroup(
+    name = "lib_lightgbm_src",
+    srcs = glob(["**"]),
+)
+
+cmake(
+    name = "lib_lightbgm_cmake",
+    generate_args = [
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DBUILD_STATIC_LIB=ON",
+        "-DCMAKE_CXX_STANDARD=11",
+    ],
+    lib_source = ":lib_lightgbm_src",
+    out_include_dir = "include",
+    out_lib_dir = "lib",
+    out_static_libs = ["lib_lightgbm.a"],
+)
+
+extract_cc_binary(
+    name = "lib_lightbgm.a",
+    binary_name = "lib_lightbgm.a",
+    cc_lib = ":lib_lightbgm_cmake",
+)
+
+cc_import(
+    name = "lib_lightbgm_cmake_import",
+    hdrs = glob(["include/**/*.h"]),
+    static_library = ":lib_lightbgm.a",
+)
+
+extract_cc_header(
+    name = "c_api.h",
+    cc_lib = ":lib_lightbgm_cmake_import",
+    header_name = "include/LightGBM/c_api.h",
+)
+
+rust_bindgen_library(
+    name = "lib_lightgbm_bindgen",
+    cc_lib = ":lib_lightbgm_cmake_import",
+    clang_flags = [
+        "-x",
+        "c++",
+        "-std=c++11",
+    ],
+    header = ":c_api.h",
+    rustc_flags = selects.with_or({
+        (
+            "@rules_rust//rust/platform:x86_64-apple-darwin",
+            "@rules_rust//rust/platform:aarch64-apple-darwin",
+        ): [
+            "-l",
+            "c++",
+        ],
+        "//conditions:default": [
+            "-l",
+            "stdc++",
+        ] + [
+            "-l",
+            "dylib=omp",
+            "-L",
+            "lib",
+        ],
+    }),
+    toolchains = ["@rules_foreign_cc//toolchains:current_cmake_toolchain"],
+)
+
+alias(
+    name = "lib_lightgbm",
+    actual = ":lib_lightgbm_bindgen",
+    visibility = ["//visibility:public"],
+)
