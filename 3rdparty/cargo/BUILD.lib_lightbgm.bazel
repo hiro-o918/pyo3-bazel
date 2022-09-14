@@ -1,0 +1,105 @@
+load("@rules_rust//bindgen:bindgen.bzl", "rust_bindgen_library")
+load("@rules_rust//rust:defs.bzl", "rust_library")
+load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
+load("@bazel_skylib//lib:selects.bzl", "selects")
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+filegroup(
+    name = "lib_lightgbm_src",
+    srcs = glob(["lightgbm-sys/lightgbm/**"]),
+)
+
+cmake(
+    name = "lib_lightbgm_cmake",
+    generate_args = [
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DBUILD_STATIC_LIB=ON",
+        "-DCMAKE_CXX_STANDARD=11",
+    ],
+    lib_source = ":lib_lightgbm_src",
+    out_include_dir = "include",
+    out_lib_dir = "lib",
+    out_static_libs = ["lib_lightgbm.a"],
+)
+
+cc_library(
+    name = "lib_lightgbm_wrapper",
+    srcs = ["lightgbm-sys/wrapper.h"],
+    deps = [
+        ":lib_lightbgm_cmake",
+    ],
+)
+
+rust_bindgen_library(
+    name = "lightgbm_sys",
+    cc_lib = ":lib_lightgbm_wrapper",
+    clang_flags = [
+        "-x",
+        "c++",
+        "-std=c++11",
+    ],
+    header = "lightgbm-sys/wrapper.h",
+    rustc_flags = selects.with_or({
+        (
+            "@rules_rust//rust/platform:x86_64-apple-darwin",
+            "@rules_rust//rust/platform:aarch64-apple-darwin",
+        ): [
+            "-l",
+            "c++",
+        ],
+        "//conditions:default": [
+            "-l",
+            "stdc++",
+        ] + [
+            "-l",
+            "dylib=omp",
+            "-L",
+            "lib",
+        ],
+    }),
+)
+
+rust_library(
+    name = "lightgbm",
+    srcs = glob(["src/**/*.rs"]),
+    compile_data = glob(
+        include = ["**"],
+        exclude = [
+            "BUILD",
+            "BUILD.bazel",
+            "WORKSPACE",
+            "WORKSPACE.bazel",
+        ],
+    ),
+    crate_root = "src/lib.rs",
+    edition = "2015",
+    proc_macro_deps = [
+        "@crate_index__derive_builder-0.5.1//:derive_builder",
+    ],
+    rustc_flags = [
+        # In most cases, warnings in 3rd party crates are not interesting as
+        # they're out of the control of consumers. The flag here silences
+        # warnings. For more details see:
+        # https://doc.rust-lang.org/rustc/lints/levels.html
+        "--cap-lints=allow",
+    ],
+    tags = [
+        "cargo-bazel",
+        "manual",
+        "noclippy",
+        "norustfmt",
+    ],
+    version = "0.2.3",
+    visibility = ["//visibility:public"],
+    deps = [
+        ":lightgbm_sys",
+        "@crate_index__libc-0.2.132//:libc",
+        "@crate_index__serde_json-1.0.85//:serde_json",
+    ],
+)
+
+alias(
+    name = "lib_lightgbm",
+    actual = ":lightgbm_sys",
+    visibility = ["//visibility:public"],
+)

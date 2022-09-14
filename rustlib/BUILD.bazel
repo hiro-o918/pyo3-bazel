@@ -27,10 +27,14 @@ rust_library(
     srcs = glob([
         "src/**/*.rs",
     ]),
-    deps = [":build_script"] + crate_deps([
+    deps = [
+        ":build_script",
+        "@lib_lightgbm//:lightgbm",
+    ] + crate_deps([
         "anyhow",
         "prost",
         "tonic",
+        "serde_json",
     ]),
 )
 

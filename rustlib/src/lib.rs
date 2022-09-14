@@ -1,5 +1,8 @@
 use anyhow::Result;
 use echo::v1::{echo_server, EchoRequest, EchoResponse};
+use lightgbm::{Booster, Dataset};
+use serde_json::json;
+
 pub mod echo {
     pub mod v1 {
         tonic::include_proto!("echo.v1");
@@ -21,4 +24,24 @@ impl echo_server::Echo for Service {
             message: request.message,
         }))
     }
+}
+
+pub fn train_lightgbm() {
+    let data = vec![
+        vec![1.0, 0.1, 0.2, 0.1],
+        vec![0.7, 0.4, 0.5, 0.1],
+        vec![0.9, 0.8, 0.5, 0.1],
+        vec![0.2, 0.2, 0.8, 0.7],
+        vec![0.1, 0.7, 1.0, 0.9],
+    ];
+    let label = vec![0.0, 0.0, 0.0, 1.0, 1.0];
+    let dataset = Dataset::from_mat(data, label).unwrap();
+    let params = json! {
+       {
+            "num_iterations": 3,
+            "objective": "binary",
+            "metric": "auc"
+        }
+    };
+    let _bst = Booster::train(dataset, &params).unwrap();
 }

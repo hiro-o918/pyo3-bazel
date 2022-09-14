@@ -7,6 +7,23 @@
 -   [poetry](https://python-poetry.org/docs/): development only
 -   [protoc](https://grpc.io/docs/protoc-installation/): development only
     -   [prost_build] of Rust depends on protoc binary, so to use rust-analyzer on development, you need to install protoc
+-   Xcode (only macOS): for build LightGBM with cmake
+
+    -   Some C++ headers can not be found on binding generation without Xcode
+    -   After installing Xcode, you can check configurations by the below command.
+
+    ```console
+    sudo xcodebuild -license
+    # Check gcc configured with prefix of Xcode not CommandLineTools
+    gcc --version
+    > Configured with: --prefix=/Applications/Xcode.app/Contents/Developer/usr --with-gxx-include-dir=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/4.2.1
+    > Apple clang version 13.0.0 (clang-1300.0.29.30)
+    > Target: x86_64-apple-darwin20.6.0
+    > Thread model: posix
+    > InstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin
+    ```
+
+-   [lightgbm-rs dependencies](https://github.com/vaaaaanquish/lightgbm-rs#require)
 
 This is an example repository to build python bindings of rust (PyO3) using Bazel.
 
@@ -36,7 +53,6 @@ Run this command every time you update Cargo.toml.
 ```console
 CARGO_BAZEL_REPIN=1 bazel sync --only=crate_index
 ```
-
 
 ### Golang
 
