@@ -1,4 +1,3 @@
 exports_files([
-    "pysen.toml",
     "pyproject.toml",
 ])

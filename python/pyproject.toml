@@ -20,9 +20,6 @@ isort = "^5.10.1"
 mypy = "^0.971"
 pytest = "^7.1.3"
 
-[[tool.pysen.lint.mypy_targets]]
-paths = ["."]
-
 [tool.black]
 line-length = 110
 target-version = ["py310"]
