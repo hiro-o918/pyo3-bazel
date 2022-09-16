@@ -105,6 +105,6 @@ rust_library(
 
 alias(
     name = "lib_lightgbm",
-    actual = ":lightgbm_sys",
+    actual = ":lib_lightgbm_wrapper",
     visibility = ["//visibility:public"],
 )
