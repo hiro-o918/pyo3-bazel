@@ -46,21 +46,25 @@ rust_bindgen_library(
         ): [
             "-l",
             "c++",
+            "-l",
+            "dylib=omp",
         ],
         "//conditions:default": [
             "-l",
             "stdc++",
-        ] + [
             "-l",
-            "dylib=omp",
+            "dylib=gomp",
+        ] + [
+            # NOTE: this is very adhoc search path for libomp
+            #       please add symbolic link if you have different path
             "-L",
-            "lib",
+            "/usr/local/lib",
         ],
     }),
 )
 
 rust_library(
-    name = "lightgbm",
+    name = "crate_lightgbm",
     srcs = glob(["src/**/*.rs"]),
     compile_data = glob(
         include = ["**"],
@@ -71,6 +75,7 @@ rust_library(
             "WORKSPACE.bazel",
         ],
     ),
+    crate_name = "lightgbm",
     crate_root = "src/lib.rs",
     edition = "2015",
     proc_macro_deps = [

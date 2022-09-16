@@ -22,14 +22,23 @@ cargo_build_script(
     ]),
 )
 
+library_rustc_flags = [
+
+    # NOTE: this is very adhoc search path for libomp
+    #       please add symbolic link if you have different path
+    "-L",
+    "/usr/local/lib",
+]
+
 rust_library(
     name = "rustlib",
     srcs = glob([
         "src/**/*.rs",
     ]),
+    rustc_flags = library_rustc_flags,
     deps = [
         ":build_script",
-        "@lib_lightgbm//:lightgbm",
+        "@lib_lightgbm//:crate_lightgbm",
     ] + crate_deps([
         "anyhow",
         "prost",
@@ -40,8 +49,14 @@ rust_library(
 
 rust_test(
     name = "rustlib_test",
-    srcs = glob([
-        "src/**/*.rs",
+    crate = ":rustlib",
+    rustc_flags = library_rustc_flags,
+    deps = [
+        ":build_script",
+    ] + crate_deps([
+        "anyhow",
+        "prost",
+        "tonic",
+        "serde_json",
     ]),
-    deps = [":rustlib"],
 )
