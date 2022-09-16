@@ -23,7 +23,6 @@ cargo_build_script(
 )
 
 library_rustc_flags = [
-
     # NOTE: this is very adhoc search path for libomp
     #       please add symbolic link if you have different path
     "-L",

@@ -62,7 +62,7 @@ def cargo_sys_dependencies():
         remote = "https://github.com/vaaaaanquish/lightgbm-rs.git",
         init_submodules = True,
         recursive_init_submodules = True,
-        build_file = Label("//3rdparty/cargo:BUILD.lib_lightbgm.bazel"),
+        build_file = Label("//3rdparty/cargo:BUILD.lib_lightgbm.bazel"),
         # # The version here should match the version used with the Rust crate `lightgbm-sys`
         shallow_since = "1635571438 +0900",
     )

@@ -10,7 +10,7 @@ filegroup(
 )
 
 cmake(
-    name = "lib_lightbgm_cmake",
+    name = "lib_lightgbm_cmake",
     generate_args = [
         "-DCMAKE_BUILD_TYPE=Release",
         "-DBUILD_STATIC_LIB=ON",
@@ -26,7 +26,7 @@ cc_library(
     name = "lib_lightgbm_wrapper",
     srcs = ["lightgbm-sys/wrapper.h"],
     deps = [
-        ":lib_lightbgm_cmake",
+        ":lib_lightgbm_cmake",
     ],
 )
 
